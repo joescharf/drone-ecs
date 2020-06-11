@@ -52,6 +52,7 @@ type Plugin struct {
 	Ulimits                 []string
 	MountPoints             []string
 	Volumes                 []string
+	PlatformVersion         string
 
 	// ServiceNetworkAssignPublicIP - Whether the task's elastic network interface receives a public IP address. The default value is DISABLED.
 	ServiceNetworkAssignPublicIp string
@@ -141,6 +142,9 @@ func (p *Plugin) Exec() error {
 			definition.MemoryReservation = aws.Int64(p.MemoryReservation)
 		}
 	}
+
+	// Platform Version
+	cleanedPlatformVersion := strings.Trim(p.PlatformVersion, " ")
 
 	// Volumes
 	for _, volume := range p.Volumes {
@@ -344,6 +348,7 @@ func (p *Plugin) Exec() error {
 		Service:              aws.String(p.Service),
 		TaskDefinition:       aws.String(val),
 		NetworkConfiguration: p.setupServiceNetworkConfiguration(),
+		PlatformVersion:      aws.String(cleanedPlatformVersion),
 	}
 
 	if p.DesiredCount >= 0 {
