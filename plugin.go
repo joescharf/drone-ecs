@@ -348,7 +348,9 @@ func (p *Plugin) Exec() error {
 		Service:              aws.String(p.Service),
 		TaskDefinition:       aws.String(val),
 		NetworkConfiguration: p.setupServiceNetworkConfiguration(),
-		PlatformVersion:      aws.String(cleanedPlatformVersion),
+	}
+	if cleanedPlatformVersion != "" {
+		sparams.PlatformVersion = aws.String(cleanedPlatformVersion)
 	}
 
 	if p.DesiredCount >= 0 {
